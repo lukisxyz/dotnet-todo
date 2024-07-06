@@ -1,0 +1,31 @@
+# Ignore Visual Studio and JetBrains Rider files
+.vs/
+.idea/
+
+# Ignore build output
+**/bin/
+**/obj/
+
+# Ignore user-specific files
+*.user
+*.suo
+*.sln.docstates
+
+# Ignore NuGet packages
+*.nupkg
+*.paket/paket.exe
+!.paket/paket.bootstrapper.exe
+
+# Ignore .NET Core and Visual Studio Code directories
+.vscode/
+
+# Ignore specific project folders
+Todo.API/bin/
+Todo.API/obj/
+Todo.Domain/bin/
+Todo.Domain/obj/
+Todo.Service/bin/
+Todo.Service/obj/
+Todo.DataAccess/bin/
+Todo.DataAccess/obj/
+
