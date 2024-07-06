@@ -1,10 +1,6 @@
-Certainly! Here's a simplified README template for your C# project:
+# Simple Todo App
 
----
-
-# Project Name
-
-Brief description or introduction of your project.
+Simple todo app untuk belajar C# dotnet.
 
 ## Setup
 
