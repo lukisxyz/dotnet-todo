@@ -8,17 +8,43 @@ namespace Todo.Api.Controllers
   [Route("api/[controller]")]
   public class TodoController : Controller
   {
+
+    private readonly DataSource _dataSource;
+    public TodoController(DataSource dataSource)
+    {
+      _dataSource = dataSource;
+    }
+
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public IActionResult GetTodoLists()
+    public IActionResult GetTodos()
     {
-      var todoList = this.GetListOfTodoItems();
+      var todoList = _dataSource.TodoLists;
       return Ok(todoList);
     }
 
+    [Route("{id}")]
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public IActionResult GetTodoByID(string id)
+    {
+      var todoList = _dataSource.TodoLists;
+      var result = todoList.FirstOrDefault(t => t.Id == id);
+      if (result == null) 
+      {
+        return NotFound("Data with specify id not found");
+      }
+
+      return Ok(result);
+    }
+
+
     [HttpPost]
-    public IActionResult CreateTodoItem([FromBody] TodoItemInputModel input)
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public IActionResult CreateTodo([FromBody] TodoItemInputModel input)
     {
       var todoItem = new TodoItem
       {
@@ -32,26 +58,64 @@ namespace Todo.Api.Controllers
           return BadRequest();
       }
 
+      _dataSource.TodoLists.Add(todoItem);
       return Ok(todoItem);
     }
 
-    private List<TodoItem> GetListOfTodoItems()
+    [Route("{id}")]
+    [HttpPatch]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public IActionResult UpdateTodo([FromBody] TodoItemInputModel input, [FromRoute] string id)
     {
-      return new List<TodoItem>
+      var todoList = _dataSource.TodoLists;
+      var currentTodo = todoList.FirstOrDefault(t => t.Id == id);
+      if (currentTodo == null) 
       {
-        new TodoItem
-        {
-          Title = "Membuat todo list",
-          Description = "Memuat todo list untuk latihan C# pertama",
-          Deadline = DateTime.Now.AddHours(2),
-        },
-        new TodoItem
-        {
-          Title = "Membuat expense tracker",
-          Description = "Membuat expense tracker dengan DDD",
-          Deadline = DateTime.Now.AddDays(2),
-        }
+        return NotFound("Data with specify id not found");
+      }
+
+
+      var todoItem = new TodoItem
+      {
+        Title = input.Title,
+        Description = input.Description,
+        Deadline = input.Deadline
       };
+
+      if (!todoItem.IsValid())
+      {
+          return BadRequest();
+      }
+      
+      _dataSource.TodoLists.Remove(currentTodo);
+
+      currentTodo.Title = todoItem.Title;
+      currentTodo.Description = todoItem.Description;
+      currentTodo.Deadline = todoItem.Deadline;
+      currentTodo.UpdatedAt = DateTime.Now;
+
+      _dataSource.TodoLists.Add(currentTodo);
+
+      return Ok(currentTodo);
+
+    }
+
+    [Route("{id}")]
+    [HttpDelete]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public IActionResult DeleteTodo(string id)
+    {
+      var todoList = _dataSource.TodoLists;
+      var result = todoList.FirstOrDefault(t => t.Id == id);
+      if (result == null) 
+      {
+        return NotFound("Data with specify id not found");
+      }
+      _dataSource.TodoLists.Remove(result);
+
+      return Ok("Data removed");
     }
 
     public class TodoItemInputModel
