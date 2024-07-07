@@ -6,7 +6,7 @@ namespace Todo.Domain.Models
 {
     public class TodoItem
     {
-        
+
         public TodoItem()
         {
             Id = Ulid.NewUlid().ToString();

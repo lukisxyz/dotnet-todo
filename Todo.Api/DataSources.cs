@@ -2,18 +2,18 @@ using Todo.Domain.Models;
 
 namespace Todo.Api
 {
-  public class DataSource
-  {
-    public DataSource()
+    public class DataSource
     {
-      TodoLists = GenerateTodoLists();
-    }
+        public DataSource()
+        {
+            TodoLists = GenerateTodoLists();
+        }
 
-    public List<TodoItem> TodoLists { get; set; }
+        public List<TodoItem> TodoLists { get; set; }
 
-    private List<TodoItem> GenerateTodoLists()
-    {
-      return new List<TodoItem>
+        private List<TodoItem> GenerateTodoLists()
+        {
+            return new List<TodoItem>
       {
         new TodoItem
         {
@@ -74,8 +74,8 @@ namespace Todo.Api
             Title = "Membuat dokumentasi proyek",
             Description = "Menulis dokumentasi untuk proyek yang sedang dikerjakan",
             Deadline = DateTime.Now.AddDays(10),
-        } 
+        }
       };
+        }
     }
-  }
 }
